@@ -1,0 +1,13 @@
+{
+  "name": "FitCheck — Седмичен чек-ин портал",
+  "short_name": "FitCheck",
+  "lang": "bg",
+  "start_url": "./dashboard.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#07080A",
+  "theme_color": "#07080A",
+  "icons": [
+    { "src": "assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

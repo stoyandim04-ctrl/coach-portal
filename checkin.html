@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="bg" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#07080A" />
+  <meta name="robots" content="noindex" />
+  <title>Седмичен чек-ин · FitCheck</title>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body class="bg-ambient font-sans text-zinc-100">
+
+  <header class="pt-safe">
+    <div class="mx-auto flex h-16 max-w-xl items-center gap-2.5 px-4">
+      <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-ink-950 shadow-glow"><i data-icon="check" class="h-5 w-5"></i></span>
+      <span class="text-lg font-bold tracking-tight">FitCheck</span>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-xl px-4 pb-40">
+
+    <!-- Loading -->
+    <section id="view-loading" class="space-y-4 pt-4">
+      <div class="skeleton h-24 rounded-3xl"></div>
+      <div class="skeleton h-40 rounded-3xl"></div>
+      <div class="skeleton h-40 rounded-3xl"></div>
+    </section>
+
+    <!-- Invalid link -->
+    <section id="view-invalid" class="hidden animate-fade-in pt-16 text-center">
+      <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-400"><i data-icon="alert" class="h-8 w-8"></i></div>
+      <h1 class="mt-5 text-2xl font-bold">Невалиден линк</h1>
+      <p class="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-zinc-400">
+        Този линк за чек-ин не съществува или е изтрит. Помолете треньора си да ви изпрати нов.
+      </p>
+      <p id="invalid-local-hint" class="mx-auto mt-4 hidden max-w-xs text-xs leading-relaxed text-amber-300/80">
+        Демо режим: линковете работят само в браузъра, в който е създаден клиентът.
+      </p>
+    </section>
+
+    <!-- Form -->
+    <form id="checkin-form" class="hidden animate-fade-in space-y-4 pt-2" novalidate>
+      <div class="px-1">
+        <p class="text-sm font-medium text-brand">Седмичен чек-ин · <span id="week-label"></span></p>
+        <h1 class="mt-1 text-3xl font-extrabold tracking-tight">Здравей, <span id="hello-name"></span> 👋</h1>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-400">Отнема около минута. Отчетът отива директно при <span id="coach-name" class="font-semibold text-zinc-200">треньора ти</span>.</p>
+      </div>
+
+      <!-- Basics -->
+      <fieldset class="rounded-3xl bg-ink-850 p-5 ring-1 ring-white/5">
+        <legend class="sr-only">Основни данни</legend>
+        <div>
+          <label for="clientName" class="mb-1.5 block text-sm font-medium text-zinc-300">Име</label>
+          <input id="clientName" name="clientName" autocomplete="name" required
+            class="h-12 w-full rounded-xl bg-ink-900 px-4 text-white placeholder-zinc-600 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-brand" />
+        </div>
+        <div class="mt-4">
+          <label for="weight" class="mb-1.5 block text-sm font-medium text-zinc-300">Тегло тази сутрин</label>
+          <div class="relative">
+            <input id="weight" name="weight" type="text" inputmode="decimal" placeholder="72.5" required autocomplete="off"
+              class="h-16 w-full rounded-2xl bg-ink-900 px-4 pr-14 text-3xl font-bold tabular-nums text-white placeholder-zinc-700 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-brand" />
+            <span class="pointer-events-none absolute inset-y-0 right-5 flex items-center text-lg font-semibold text-zinc-500">кг</span>
+          </div>
+          <p class="mt-1.5 text-xs text-zinc-500">Претегли се сутрин, на гладно, след тоалетна.</p>
+        </div>
+      </fieldset>
+
+      <!-- Scores -->
+      <fieldset class="rounded-3xl bg-ink-850 p-5 ring-1 ring-white/5">
+        <legend class="sr-only">Сън и енергия</legend>
+        <div class="space-y-6">
+        <div data-score="sleep">
+          <div class="flex items-end justify-between">
+            <label for="sleep" class="flex items-center gap-2 text-sm font-medium text-zinc-300"><i data-icon="moon" class="h-4 w-4 text-zinc-500"></i> Качество на съня</label>
+            <p><span data-score-value class="text-3xl font-extrabold tabular-nums text-white">7</span><span class="text-sm text-zinc-500">/10</span></p>
+          </div>
+          <input id="sleep" name="sleep" type="range" min="1" max="10" step="1" value="7" class="range mt-4" />
+          <div class="mt-2 flex justify-between text-[11px] text-zinc-500"><span>Ужасно</span><span data-score-label class="font-medium text-brand">Добре</span><span>Отлично</span></div>
+        </div>
+        <div data-score="energy">
+          <div class="flex items-end justify-between">
+            <label for="energy" class="flex items-center gap-2 text-sm font-medium text-zinc-300"><i data-icon="zap" class="h-4 w-4 text-zinc-500"></i> Ниво на енергия</label>
+            <p><span data-score-value class="text-3xl font-extrabold tabular-nums text-white">7</span><span class="text-sm text-zinc-500">/10</span></p>
+          </div>
+          <input id="energy" name="energy" type="range" min="1" max="10" step="1" value="7" class="range mt-4" />
+          <div class="mt-2 flex justify-between text-[11px] text-zinc-500"><span>Без сили</span><span data-score-label class="font-medium text-brand">Добре</span><span>Заредена/а</span></div>
+        </div>
+        </div>
+      </fieldset>
+
+      <!-- Measurements (optional) -->
+      <details class="group rounded-3xl bg-ink-850 ring-1 ring-white/5">
+        <summary class="flex cursor-pointer list-none items-center justify-between p-5 [&::-webkit-details-marker]:hidden">
+          <span class="flex items-center gap-2 text-sm font-medium text-zinc-300"><i data-icon="ruler" class="h-4 w-4 text-zinc-500"></i> Мерки в сантиметри <span class="text-zinc-500">(по избор)</span></span>
+          <span class="text-zinc-500 transition group-open:rotate-180"><i data-icon="chevronDown" class="h-5 w-5"></i></span>
+        </summary>
+        <div id="measurements" class="grid grid-cols-2 gap-3 px-5 pb-5"></div>
+      </details>
+
+      <!-- Photos -->
+      <fieldset class="rounded-3xl bg-ink-850 p-5 ring-1 ring-white/5">
+        <legend class="sr-only">Снимки</legend>
+        <div class="flex items-center justify-between">
+          <p class="flex items-center gap-2 text-sm font-medium text-zinc-300"><i data-icon="camera" class="h-4 w-4 text-zinc-500"></i> Снимки на прогреса</p>
+          <span class="text-xs text-zinc-500">препоръчително</span>
+        </div>
+        <div id="photo-slots" class="mt-4 grid grid-cols-3 gap-2.5"></div>
+        <p class="mt-3 text-xs leading-relaxed text-zinc-500">Едно и също място, светлина и поза всяка седмица. Снимките вижда само треньорът ти.</p>
+      </fieldset>
+
+      <!-- Comment -->
+      <fieldset class="rounded-3xl bg-ink-850 p-5 ring-1 ring-white/5">
+        <legend class="sr-only">Коментар</legend>
+        <label for="comment" class="flex items-center gap-2 text-sm font-medium text-zinc-300"><i data-icon="message" class="h-4 w-4 text-zinc-500"></i> Как мина седмицата?</label>
+        <textarea id="comment" name="comment" rows="5" maxlength="2000"
+          placeholder="Хранене, тренировки, стрес, глад, предизвикателства, победи…"
+          class="mt-3 w-full resize-y rounded-2xl bg-ink-900 px-4 py-3 text-white placeholder-zinc-600 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-brand"></textarea>
+        <p class="mt-1 text-right text-xs text-zinc-600"><span id="comment-count">0</span>/2000</p>
+      </fieldset>
+
+      <p id="form-error" class="hidden rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-300 ring-1 ring-rose-500/20" role="alert"></p>
+
+      <!-- Sticky submit -->
+      <div class="pb-safe fixed inset-x-0 bottom-0 z-20 border-t border-white/5 bg-ink-950/85 px-4 pt-3 backdrop-blur-xl">
+        <div class="mx-auto max-w-xl">
+          <button id="submit-btn" type="submit" class="inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-base font-bold text-ink-950 shadow-glow transition hover:bg-brand-400 active:scale-[.99] disabled:opacity-70">
+            <i data-icon="send" class="h-5 w-5"></i> Изпрати седмичен отчет
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Success -->
+    <section id="view-success" class="hidden animate-fade-in pt-16 text-center">
+      <div class="relative mx-auto h-24 w-24">
+        <span class="success-ring absolute inset-0 rounded-full bg-brand/30"></span>
+        <span class="relative flex h-24 w-24 items-center justify-center rounded-full bg-brand text-ink-950 shadow-glow">
+          <svg class="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="check-path" d="M20 6 9 17l-5-5" /></svg>
+        </span>
+      </div>
+      <h1 class="mt-8 text-3xl font-extrabold tracking-tight">Отчетът е изпратен! 🎉</h1>
+      <p class="mx-auto mt-3 max-w-sm leading-relaxed text-zinc-400">
+        Благодарим, <span id="success-name" class="font-semibold text-white"></span>! <span id="success-coach"></span>
+      </p>
+      <div id="success-summary" class="mx-auto mt-8 grid max-w-sm grid-cols-3 gap-2.5"></div>
+      <p class="mt-10 text-xs text-zinc-600">Запази този линк — ще го ползваш и следващата седмица.</p>
+    </section>
+  </main>
+
+  <script type="module" src="assets/js/pages/checkin.js"></script>
+</body>
+</html>

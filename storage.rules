@@ -1,0 +1,20 @@
+rules_version = '2';
+
+// FitCheck — Storage rules for progress photos: checkins/{token}/{checkinId}/{slot}.jpg
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /checkins/{token}/{checkinId}/{file} {
+      function link() {
+        return firestore.get(/databases/(default)/documents/checkinLinks/$(token));
+      }
+
+      // Anyone holding a valid link may upload an image (max 5 MB).
+      allow create: if request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*')
+        && firestore.exists(/databases/(default)/documents/checkinLinks/$(token));
+
+      // Only the owning coach may view or delete photos.
+      allow read, delete: if request.auth != null && link().data.coachId == request.auth.uid;
+    }
+  }
+}

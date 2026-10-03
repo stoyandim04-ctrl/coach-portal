@@ -1,0 +1,52 @@
+rules_version = '2';
+
+// FitCheck — Firestore security rules.
+// Coaches only see their own data. Clients (unauthenticated) can only:
+//   • read a single checkinLinks/{token} document when they know the exact token
+//   • create a check-in that matches that link.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isScore(v) { return v is int && v >= 1 && v <= 10; }
+
+    match /coaches/{uid} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    match /clients/{clientId} {
+      allow read, update, delete: if signedIn() && resource.data.coachId == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.coachId == request.auth.uid;
+    }
+
+    match /checkinLinks/{token} {
+      allow get: if true;          // exact-token lookup only
+      allow list: if false;        // no enumeration of links
+      allow create: if signedIn() && request.resource.data.coachId == request.auth.uid;
+      allow delete: if signedIn() && resource.data.coachId == request.auth.uid;
+    }
+
+    match /checkins/{checkinId} {
+      function linkPath() {
+        return /databases/$(database)/documents/checkinLinks/$(request.resource.data.token);
+      }
+
+      allow create: if request.resource.data.token is string
+        && exists(linkPath())
+        && get(linkPath()).data.clientId == request.resource.data.clientId
+        && get(linkPath()).data.coachId == request.resource.data.coachId
+        && request.resource.data.weight is number
+        && request.resource.data.weight >= 25 && request.resource.data.weight <= 350
+        && isScore(request.resource.data.sleep)
+        && isScore(request.resource.data.energy)
+        && request.resource.data.comment is string && request.resource.data.comment.size() <= 2000
+        && !('coachNote' in request.resource.data);
+
+      allow read, delete: if signedIn() && resource.data.coachId == request.auth.uid;
+
+      // Coaches may only add / edit their feedback note.
+      allow update: if signedIn() && resource.data.coachId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['coachNote', 'coachNoteAt']);
+    }
+  }
+}

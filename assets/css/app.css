@@ -1,0 +1,149 @@
+/* FitCheck — custom styles that complement Tailwind utilities. */
+
+:root {
+  color-scheme: dark;
+  --bg: #07080a;
+  --brand: #c8f31d;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html,
+body {
+  background: var(--bg);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100dvh;
+  overscroll-behavior-y: none;
+}
+
+/* Subtle ambient glow behind the content */
+.bg-ambient {
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, rgba(200, 243, 29, 0.08), transparent 60%),
+    radial-gradient(40rem 30rem at -10% 10%, rgba(56, 189, 248, 0.05), transparent 60%),
+    var(--bg);
+}
+
+.pt-safe { padding-top: var(--safe-top); }
+.pb-safe { padding-bottom: calc(var(--safe-bottom) + 1rem); }
+.bottom-safe { bottom: calc(var(--safe-bottom) + 1rem); }
+
+/* Hide scrollbars on horizontal chip rows */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Prevent iOS zoom on focus: inputs must be >= 16px */
+input,
+select,
+textarea { font-size: 16px; }
+
+/* Number inputs without spinners */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type='number'] { -moz-appearance: textfield; }
+
+/* ---------- Range slider (sleep / energy) ---------- */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--brand) 0%, var(--brand) var(--fill, 50%), #1e222a var(--fill, 50%), #1e222a 100%);
+  outline: none;
+  touch-action: pan-y;
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid var(--brand);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.range::-webkit-slider-thumb:active { transform: scale(1.15); }
+.range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid var(--brand);
+  cursor: pointer;
+}
+.range:focus-visible { box-shadow: 0 0 0 3px rgba(200, 243, 29, 0.35); }
+
+/* ---------- Animations ---------- */
+@keyframes fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes pop-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-12px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes check-draw { to { stroke-dashoffset: 0; } }
+@keyframes ring { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(1.6); opacity: 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+
+.animate-fade-in { animation: fade-in 0.35s ease both; }
+.animate-pop-in { animation: pop-in 0.22s ease both; }
+.animate-toast-in { animation: toast-in 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+
+/* Modal: bottom sheet on mobile, centred dialog on larger screens */
+.modal-panel { animation: sheet-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+@media (min-width: 640px) {
+  .modal-panel { animation: pop-in 0.22s ease both; }
+}
+
+.check-path {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: check-draw 0.5s 0.2s ease forwards;
+}
+.success-ring { animation: ring 1.6s ease-out infinite; }
+
+.spinner {
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+.skeleton { position: relative; overflow: hidden; background: #16191f; }
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+  animation: shimmer 1.4s infinite;
+}
+
+/* Status dot pulse for "on time" clients */
+.dot-pulse { position: relative; }
+.dot-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: ring 2s ease-out infinite;
+}
+
+/* Photo slot */
+.photo-slot { aspect-ratio: 3 / 4; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
