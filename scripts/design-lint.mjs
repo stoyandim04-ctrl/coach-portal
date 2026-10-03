@@ -19,6 +19,8 @@ const MIGRATED = [
   'assets/js/pages/dashboard.js',
   'assets/js/lib/ui.js',
   'assets/js/lib/model.js',
+  'checkin.html',
+  'assets/js/pages/checkin.js',
 ];
 
 const SPACING = new Set(['0', 'px', '1', '2', '3', '4', '6', '8', '12', '16']);

@@ -11,11 +11,11 @@ export const PHOTO_SLOTS = [
 ];
 
 export const MEASUREMENTS = [
-  { key: 'waist', label: 'Талия' },
-  { key: 'chest', label: 'Гърди' },
-  { key: 'hips', label: 'Ханш' },
-  { key: 'arm', label: 'Ръка' },
-  { key: 'thigh', label: 'Бедро' },
+  { key: 'waist', label: 'Талия', hint: 'на нивото на пъпа, след издишване' },
+  { key: 'chest', label: 'Гърди', hint: 'най-широката част' },
+  { key: 'hips', label: 'Ханш', hint: 'през седалището' },
+  { key: 'arm', label: 'Ръка', hint: 'бицепс, отпуснат' },
+  { key: 'thigh', label: 'Бедро', hint: 'най-широката част' },
 ];
 
 /** Check-in freshness indicator shown on the coach dashboard. */

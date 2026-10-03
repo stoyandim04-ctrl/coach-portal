@@ -37,7 +37,8 @@
 **Правила:**
 - Фон на статус: цветът с прозрачност `/10`, рамка с `/20` и текст в пълния цвят. Пример: `bg-success/10 ring-success/20 text-success`.
 - Текст върху `canvas`, `surface` и `raised` е само `fg`, `muted` или `subtle`.
-- Белият цвят (`white`) е разрешен само с прозрачност за наслагвания (`bg-white/5` за hover). Черният е разрешен само за затъмнен фон (`bg-black/70`).
+- Белият цвят (`white`) е разрешен само с прозрачност: наслагвания (`bg-white/5` за hover), **тънки рамки** (виж по-долу) и тих placeholder на големи числа (`placeholder-white/20`). Черният е разрешен само за затъмнен фон (`bg-black/70`).
+- **Тънки рамки (hairline):** `border-white/10` в покой и `border-white/20` при hover. Използват се за полета, разделители между секции и плаващи ленти. Полупрозрачната рамка приема оттенъка на повърхността под нея, затова изглежда по-фино от плътен сив цвят. `ring-line` остава за картите в таблото.
 - Без градиенти. Изключения: сиянието на акцента (`shadow-accent`) и запълването под графиката.
 
 ---
@@ -135,6 +136,9 @@
 | **Опасно действие** | Вторичен бутон с `text-danger`. Потвърждава се винаги с диалог. |
 | **Поле** | `h-12 px-4 rounded-md bg-raised ring-1 ring-line text-body`, фокус `ring-2 ring-accent`. Етикетът е над полето (`text-small font-medium text-muted`, `mb-2`). |
 | **Карта** | `rounded-lg bg-surface ring-1 ring-line p-4 sm:p-6`. |
+| **Премиум поле (форма)** | Контейнер `rounded-lg border border-white/10 bg-surface`, hover `border-white/20`. При фокус (`focus-within`): `border-accent/60 bg-raised ring-4 ring-accent/10`, `transition duration-200`. Етикетът е **вътре** в контейнера (`text-caption font-medium text-subtle`), а стойността е с Display шрифт (`text-title`, за теглото `text-display`). Мерната единица е вдясно, в `text-subtle`. При грешка: `border-danger/60 ring-4 ring-danger/10` и съобщение под полето. |
+| **Секция на форма** | Без карта. Отделя се с `border-t border-white/10` и `py-8`. Заглавие: пореден номер (`font-display text-small text-subtle`, защото редът на попълване е информация) + `text-title` + описание `text-small text-muted`. |
+| **Плъзгач (1–10)** | Писта 4 px `white/10`, запълнена част `accent`, палец 24 px. Стойността се показва голяма (`font-display text-headline`) с текстова оценка под нея. |
 | **Ред в списък** | Карта с `p-4`, `gap-3`, аватар 40, име `text-body font-medium`, мета `text-caption text-subtle`, стойност вдясно с Display шрифт. |
 | **Показател (KPI)** | Карта: етикет `text-caption text-subtle` отгоре, число `font-display text-headline`. |
 | **Бадж за статус** | `h-8 px-3 rounded-full text-caption font-medium` + точка `h-2 w-2`, цветове по §2. |
@@ -149,7 +153,7 @@
 
 ## 8. Движение
 
-- Продължителност: 150 ms (hover), 250 ms (поява), 300 ms (sheet).
+- Продължителност: 150 ms (hover), 200 ms (фокус на поле), 300 ms (поява, sheet).
 - Крива `cubic-bezier(.2,.9,.3,1)`. Без отскачане, освен при иконката за успех.
 - Спазва се `prefers-reduced-motion`.
 

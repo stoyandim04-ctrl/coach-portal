@@ -3,134 +3,174 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#07080A" />
+  <meta name="theme-color" content="#09090B" />
   <meta name="robots" content="noindex" />
   <title>Седмичен чек-ин · FitCheck</title>
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="assets/js/design-tokens.js"></script>
-  <script src="assets/js/tailwind.config.js"></script>
+  <script src="assets/js/tailwind.strict.js"></script>
   <link rel="stylesheet" href="assets/css/app.css" />
 </head>
-<body class="bg-ambient font-sans text-zinc-100">
+<body class="bg-canvas font-sans text-body text-fg">
 
-  <header class="pt-safe">
-    <div class="mx-auto flex h-16 max-w-xl items-center gap-2.5 px-4">
-      <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-ink-950 shadow-glow"><i data-icon="check" class="h-5 w-5"></i></span>
-      <span class="text-lg font-bold tracking-tight">FitCheck</span>
+  <!-- App bar + completion meter -->
+  <header class="pt-safe sticky top-0 z-30 border-b border-white/10 bg-canvas/80 backdrop-blur">
+    <div class="mx-auto flex h-14 max-w-xl items-center justify-between gap-4 px-4 sm:px-6">
+      <span class="flex items-center gap-2">
+        <span class="inline-flex h-8 w-8 items-center justify-center rounded-sm bg-accent text-accent-fg"><i data-icon="check" class="h-5 w-5"></i></span>
+        <span class="font-display text-title font-semibold">FitCheck</span>
+      </span>
+      <span id="week-chip" class="hidden h-8 items-center rounded-full border border-white/10 px-3 text-caption font-medium tabular-nums text-muted"></span>
     </div>
+    <div id="progress" class="mx-auto hidden max-w-xl gap-1 px-4 pb-3 sm:px-6" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" aria-label="Попълнени секции"></div>
   </header>
 
-  <main class="mx-auto max-w-xl px-4 pb-40">
+  <main class="mx-auto max-w-xl px-4 sm:px-6">
 
     <!-- Loading -->
-    <section id="view-loading" class="space-y-4 pt-4">
-      <div class="skeleton h-24 rounded-3xl"></div>
-      <div class="skeleton h-40 rounded-3xl"></div>
-      <div class="skeleton h-40 rounded-3xl"></div>
+    <section id="view-loading" class="flex flex-col gap-6 py-8" aria-label="Зареждане">
+      <div class="skeleton h-4 w-1/3 rounded-sm"></div>
+      <div class="skeleton h-12 w-2/3 rounded-md"></div>
+      <div class="skeleton h-chart rounded-lg"></div>
+      <div class="skeleton h-chart rounded-lg"></div>
     </section>
 
     <!-- Invalid link -->
-    <section id="view-invalid" class="hidden animate-fade-in pt-16 text-center">
-      <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-400"><i data-icon="alert" class="h-8 w-8"></i></div>
-      <h1 class="mt-5 text-2xl font-bold">Невалиден линк</h1>
-      <p class="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-zinc-400">
-        Този линк за чек-ин не съществува или е изтрит. Помолете треньора си да ви изпрати нов.
-      </p>
-      <p id="invalid-local-hint" class="mx-auto mt-4 hidden max-w-xs text-xs leading-relaxed text-amber-300/80">
-        Демо режим: линковете работят само в браузъра, в който е създаден клиентът.
-      </p>
+    <section id="view-invalid" class="animate-fade-in hidden flex-col items-center py-16 text-center">
+      <span class="flex h-14 w-14 items-center justify-center rounded-full border border-danger/30 bg-danger/10 text-danger"><i data-icon="alert" class="h-5 w-5"></i></span>
+      <h1 id="invalid-title" class="mt-6 font-display text-headline font-semibold">Линкът не е валиден</h1>
+      <p id="invalid-text" class="mt-2 max-w-xs text-small text-muted">Този линк за чек-ин не съществува или е изтрит. Помолете треньора си за нов.</p>
+      <p id="invalid-local-hint" class="mt-4 hidden max-w-xs text-caption text-warning">Демо режим: линковете работят само в браузъра, в който е създаден клиентът.</p>
     </section>
 
     <!-- Form -->
-    <form id="checkin-form" class="hidden animate-fade-in space-y-4 pt-2" novalidate>
-      <div class="px-1">
-        <p class="text-sm font-medium text-brand">Седмичен чек-ин · <span id="week-label"></span></p>
-        <h1 class="mt-1 text-3xl font-extrabold tracking-tight">Здравей, <span id="hello-name"></span> 👋</h1>
-        <p class="mt-2 text-sm leading-relaxed text-zinc-400">Отнема около минута. Отчетът отива директно при <span id="coach-name" class="font-semibold text-zinc-200">треньора ти</span>.</p>
+    <form id="checkin-form" class="animate-fade-in hidden pb-16" novalidate>
+      <div class="flex flex-col gap-2 py-8">
+        <p id="eyebrow" class="text-caption font-medium uppercase tracking-wider text-subtle">Седмичен отчет</p>
+        <h1 class="font-display text-headline font-semibold">Здравей, <span id="hello-name"></span></h1>
+        <p class="text-small text-muted">Пет кратки стъпки, около минута. Отчетът отива директно при <span id="coach-name" class="text-fg">треньора ти</span>.</p>
       </div>
 
-      <!-- Basics -->
-      <fieldset class="rounded-3xl bg-ink-850 p-5 ring-1 ring-white/5">
-        <legend class="sr-only">Основни данни</legend>
-        <div>
-          <label for="clientName" class="mb-1.5 block text-sm font-medium text-zinc-300">Име</label>
-          <input id="clientName" name="clientName" autocomplete="name" required
-            class="h-12 w-full rounded-xl bg-ink-900 px-4 text-white placeholder-zinc-600 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-brand" />
-        </div>
-        <div class="mt-4">
-          <label for="weight" class="mb-1.5 block text-sm font-medium text-zinc-300">Тегло тази сутрин</label>
-          <div class="relative">
-            <input id="weight" name="weight" type="text" inputmode="decimal" placeholder="72.5" required autocomplete="off"
-              class="h-16 w-full rounded-2xl bg-ink-900 px-4 pr-14 text-3xl font-bold tabular-nums text-white placeholder-zinc-700 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-brand" />
-            <span class="pointer-events-none absolute inset-y-0 right-5 flex items-center text-lg font-semibold text-zinc-500">кг</span>
+      <!-- 01 Weight -->
+      <section class="flex flex-col gap-6 border-t border-white/10 py-8" aria-labelledby="s1">
+        <div class="flex items-baseline gap-3">
+          <span class="font-display text-small font-medium tabular-nums text-subtle" aria-hidden="true">01</span>
+          <div>
+            <h2 id="s1" class="font-display text-title font-semibold">Тегло</h2>
+            <p class="text-small text-muted">Сутрин, на гладно, след тоалетна.</p>
           </div>
-          <p class="mt-1.5 text-xs text-zinc-500">Претегли се сутрин, на гладно, след тоалетна.</p>
         </div>
-      </fieldset>
 
-      <!-- Scores -->
-      <fieldset class="rounded-3xl bg-ink-850 p-5 ring-1 ring-white/5">
-        <legend class="sr-only">Сън и енергия</legend>
-        <div class="space-y-6">
-        <div data-score="sleep">
-          <div class="flex items-end justify-between">
-            <label for="sleep" class="flex items-center gap-2 text-sm font-medium text-zinc-300"><i data-icon="moon" class="h-4 w-4 text-zinc-500"></i> Качество на съня</label>
-            <p><span data-score-value class="text-3xl font-extrabold tabular-nums text-white">7</span><span class="text-sm text-zinc-500">/10</span></p>
+        <div class="flex flex-col gap-2">
+          <div data-field="weight" class="flex items-center gap-2 rounded-lg border border-white/10 bg-surface p-2 pl-4 transition duration-200 hover:border-white/20 focus-within:border-accent/60 focus-within:bg-raised focus-within:ring-4 focus-within:ring-accent/10">
+            <label for="weight" class="sr-only">Тегло в килограми</label>
+            <input id="weight" name="weight" type="text" inputmode="decimal" autocomplete="off" placeholder="0,0" required
+              class="min-w-0 flex-1 bg-transparent py-2 font-display text-display font-semibold tabular-nums text-fg placeholder-white/20 focus:outline-none" />
+            <span class="font-display text-title font-medium text-subtle" aria-hidden="true">кг</span>
+            <span class="flex flex-col gap-1">
+              <button type="button" data-step="0.1" class="inline-flex h-8 w-10 items-center justify-center rounded-sm border border-white/10 text-muted transition duration-150 hover:border-white/20 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" aria-label="Увеличи с 0,1 кг"><i data-icon="plus" class="h-4 w-4"></i></button>
+              <button type="button" data-step="-0.1" class="inline-flex h-8 w-10 items-center justify-center rounded-sm border border-white/10 text-muted transition duration-150 hover:border-white/20 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" aria-label="Намали с 0,1 кг"><i data-icon="minus" class="h-4 w-4"></i></button>
+            </span>
           </div>
-          <input id="sleep" name="sleep" type="range" min="1" max="10" step="1" value="7" class="range mt-4" />
-          <div class="mt-2 flex justify-between text-[11px] text-zinc-500"><span>Ужасно</span><span data-score-label class="font-medium text-brand">Добре</span><span>Отлично</span></div>
+          <p data-error-for="weight" class="hidden text-caption text-danger" role="alert"></p>
         </div>
-        <div data-score="energy">
-          <div class="flex items-end justify-between">
-            <label for="energy" class="flex items-center gap-2 text-sm font-medium text-zinc-300"><i data-icon="zap" class="h-4 w-4 text-zinc-500"></i> Ниво на енергия</label>
-            <p><span data-score-value class="text-3xl font-extrabold tabular-nums text-white">7</span><span class="text-sm text-zinc-500">/10</span></p>
+
+        <div class="flex flex-col gap-2">
+          <label data-field="clientName" class="flex flex-col gap-1 rounded-lg border border-white/10 bg-surface px-4 py-3 transition duration-200 hover:border-white/20 focus-within:border-accent/60 focus-within:bg-raised focus-within:ring-4 focus-within:ring-accent/10">
+            <span class="text-caption font-medium text-subtle">Изпраща се от</span>
+            <input id="clientName" name="clientName" autocomplete="name" required
+              class="w-full bg-transparent text-body font-medium text-fg placeholder-subtle focus:outline-none" />
+          </label>
+          <p data-error-for="clientName" class="hidden text-caption text-danger" role="alert"></p>
+        </div>
+      </section>
+
+      <!-- 02 Recovery -->
+      <section class="flex flex-col gap-8 border-t border-white/10 py-8" aria-labelledby="s2">
+        <div class="flex items-baseline gap-3">
+          <span class="font-display text-small font-medium tabular-nums text-subtle" aria-hidden="true">02</span>
+          <div>
+            <h2 id="s2" class="font-display text-title font-semibold">Възстановяване</h2>
+            <p class="text-small text-muted">Средно за изминалите 7 дни.</p>
           </div>
-          <input id="energy" name="energy" type="range" min="1" max="10" step="1" value="7" class="range mt-4" />
-          <div class="mt-2 flex justify-between text-[11px] text-zinc-500"><span>Без сили</span><span data-score-label class="font-medium text-brand">Добре</span><span>Заредена/а</span></div>
         </div>
+
+        <div data-score="sleep" class="flex flex-col gap-3">
+          <div class="flex items-end justify-between gap-4">
+            <label for="sleep" class="flex items-center gap-2 text-small font-medium text-muted"><i data-icon="moon" class="h-4 w-4 text-subtle"></i> Качество на съня</label>
+            <p class="font-display tabular-nums"><span data-score-value class="text-headline font-semibold text-fg">7</span><span class="text-small text-subtle">/10</span></p>
+          </div>
+          <input id="sleep" name="sleep" type="range" min="1" max="10" step="1" value="7" class="fc-range" />
+          <div class="flex justify-between text-caption text-subtle"><span>Неспокоен</span><span data-score-label class="font-medium text-fg">Добре</span><span>Дълбок</span></div>
         </div>
-      </fieldset>
 
-      <!-- Measurements (optional) -->
-      <details class="group rounded-3xl bg-ink-850 ring-1 ring-white/5">
-        <summary class="flex cursor-pointer list-none items-center justify-between p-5 [&::-webkit-details-marker]:hidden">
-          <span class="flex items-center gap-2 text-sm font-medium text-zinc-300"><i data-icon="ruler" class="h-4 w-4 text-zinc-500"></i> Мерки в сантиметри <span class="text-zinc-500">(по избор)</span></span>
-          <span class="text-zinc-500 transition group-open:rotate-180"><i data-icon="chevronDown" class="h-5 w-5"></i></span>
-        </summary>
-        <div id="measurements" class="grid grid-cols-2 gap-3 px-5 pb-5"></div>
-      </details>
-
-      <!-- Photos -->
-      <fieldset class="rounded-3xl bg-ink-850 p-5 ring-1 ring-white/5">
-        <legend class="sr-only">Снимки</legend>
-        <div class="flex items-center justify-between">
-          <p class="flex items-center gap-2 text-sm font-medium text-zinc-300"><i data-icon="camera" class="h-4 w-4 text-zinc-500"></i> Снимки на прогреса</p>
-          <span class="text-xs text-zinc-500">препоръчително</span>
+        <div data-score="energy" class="flex flex-col gap-3">
+          <div class="flex items-end justify-between gap-4">
+            <label for="energy" class="flex items-center gap-2 text-small font-medium text-muted"><i data-icon="zap" class="h-4 w-4 text-subtle"></i> Ниво на енергия</label>
+            <p class="font-display tabular-nums"><span data-score-value class="text-headline font-semibold text-fg">7</span><span class="text-small text-subtle">/10</span></p>
+          </div>
+          <input id="energy" name="energy" type="range" min="1" max="10" step="1" value="7" class="fc-range" />
+          <div class="flex justify-between text-caption text-subtle"><span>Изтощен/а</span><span data-score-label class="font-medium text-fg">Добре</span><span>Зареден/а</span></div>
         </div>
-        <div id="photo-slots" class="mt-4 grid grid-cols-3 gap-2.5"></div>
-        <p class="mt-3 text-xs leading-relaxed text-zinc-500">Едно и също място, светлина и поза всяка седмица. Снимките вижда само треньорът ти.</p>
-      </fieldset>
+      </section>
 
-      <!-- Comment -->
-      <fieldset class="rounded-3xl bg-ink-850 p-5 ring-1 ring-white/5">
-        <legend class="sr-only">Коментар</legend>
-        <label for="comment" class="flex items-center gap-2 text-sm font-medium text-zinc-300"><i data-icon="message" class="h-4 w-4 text-zinc-500"></i> Как мина седмицата?</label>
-        <textarea id="comment" name="comment" rows="5" maxlength="2000"
-          placeholder="Хранене, тренировки, стрес, глад, предизвикателства, победи…"
-          class="mt-3 w-full resize-y rounded-2xl bg-ink-900 px-4 py-3 text-white placeholder-zinc-600 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-brand"></textarea>
-        <p class="mt-1 text-right text-xs text-zinc-600"><span id="comment-count">0</span>/2000</p>
-      </fieldset>
+      <!-- 03 Measurements -->
+      <section class="flex flex-col gap-6 border-t border-white/10 py-8" aria-labelledby="s3">
+        <div class="flex items-baseline gap-3">
+          <span class="font-display text-small font-medium tabular-nums text-subtle" aria-hidden="true">03</span>
+          <div>
+            <h2 id="s3" class="font-display text-title font-semibold">Мерки <span class="font-sans text-small font-normal text-subtle">· по избор</span></h2>
+            <p class="text-small text-muted">С шивашки метър, плътно до кожата, без да стягаш.</p>
+          </div>
+        </div>
+        <div id="measurements" class="grid grid-cols-2 gap-2"></div>
+        <p data-error-for="measurements" class="hidden text-caption text-danger" role="alert"></p>
+      </section>
 
-      <p id="form-error" class="hidden rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-300 ring-1 ring-rose-500/20" role="alert"></p>
+      <!-- 04 Photos -->
+      <section class="flex flex-col gap-6 border-t border-white/10 py-8" aria-labelledby="s4">
+        <div class="flex items-baseline gap-3">
+          <span class="font-display text-small font-medium tabular-nums text-subtle" aria-hidden="true">04</span>
+          <div>
+            <h2 id="s4" class="font-display text-title font-semibold">Снимки</h2>
+            <p class="text-small text-muted">Същото място, светлина и поза всяка седмица. Вижда ги само треньорът ти.</p>
+          </div>
+        </div>
+        <div id="photo-slots" class="grid grid-cols-3 gap-2"></div>
+      </section>
 
-      <!-- Sticky submit -->
-      <div class="pb-safe fixed inset-x-0 bottom-0 z-20 border-t border-white/5 bg-ink-950/85 px-4 pt-3 backdrop-blur-xl">
-        <div class="mx-auto max-w-xl">
-          <button id="submit-btn" type="submit" class="inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-base font-bold text-ink-950 shadow-glow transition hover:bg-brand-400 active:scale-[.99] disabled:opacity-70">
+      <!-- 05 Notes -->
+      <section class="flex flex-col gap-6 border-t border-white/10 py-8" aria-labelledby="s5">
+        <div class="flex items-baseline gap-3">
+          <span class="font-display text-small font-medium tabular-nums text-subtle" aria-hidden="true">05</span>
+          <div>
+            <h2 id="s5" class="font-display text-title font-semibold">Седмицата</h2>
+            <p class="text-small text-muted">Хранене, тренировки, стрес, глад, победи.</p>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label data-field="comment" class="flex flex-col gap-1 rounded-lg border border-white/10 bg-surface px-4 py-3 transition duration-200 hover:border-white/20 focus-within:border-accent/60 focus-within:bg-raised focus-within:ring-4 focus-within:ring-accent/10">
+            <span class="text-caption font-medium text-subtle">Как мина седмицата?</span>
+            <textarea id="comment" name="comment" rows="5" maxlength="2000" placeholder="Напр. спазих режима 6 от 7 дни, в петък вечеря навън…"
+              class="w-full resize-none bg-transparent text-body text-fg placeholder-subtle focus:outline-none"></textarea>
+          </label>
+          <p class="text-right text-caption tabular-nums text-subtle"><span id="comment-count">0</span> / 2000</p>
+        </div>
+      </section>
+
+      <p id="form-error" class="mb-8 hidden rounded-md border border-danger/30 bg-danger/10 p-4 text-small text-danger" role="alert"></p>
+
+      <!-- Spacer so the fixed submit bar never covers content -->
+      <div class="h-16" aria-hidden="true"></div>
+
+      <!-- Submit bar -->
+      <div class="pb-safe fixed inset-x-0 bottom-0 z-20 border-t border-white/10 bg-canvas/80 px-4 pt-3 backdrop-blur sm:px-6">
+        <div class="mx-auto flex max-w-xl flex-col gap-2">
+          <button id="submit-btn" type="submit" class="inline-flex h-14 w-full items-center justify-center gap-2 rounded-md bg-accent text-small font-semibold text-accent-fg shadow-accent transition duration-150 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:opacity-60">
             <i data-icon="send" class="h-5 w-5"></i> Изпрати седмичен отчет
           </button>
         </div>
@@ -138,19 +178,17 @@
     </form>
 
     <!-- Success -->
-    <section id="view-success" class="hidden animate-fade-in pt-16 text-center">
-      <div class="relative mx-auto h-24 w-24">
-        <span class="success-ring absolute inset-0 rounded-full bg-brand/30"></span>
-        <span class="relative flex h-24 w-24 items-center justify-center rounded-full bg-brand text-ink-950 shadow-glow">
-          <svg class="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="check-path" d="M20 6 9 17l-5-5" /></svg>
+    <section id="view-success" class="animate-fade-in hidden flex-col items-center py-16 text-center">
+      <div class="relative h-16 w-16">
+        <span class="success-ring absolute inset-0 rounded-full bg-accent/30"></span>
+        <span class="relative flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-fg shadow-accent">
+          <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="check-path" d="M20 6 9 17l-5-5" /></svg>
         </span>
       </div>
-      <h1 class="mt-8 text-3xl font-extrabold tracking-tight">Отчетът е изпратен! 🎉</h1>
-      <p class="mx-auto mt-3 max-w-sm leading-relaxed text-zinc-400">
-        Благодарим, <span id="success-name" class="font-semibold text-white"></span>! <span id="success-coach"></span>
-      </p>
-      <div id="success-summary" class="mx-auto mt-8 grid max-w-sm grid-cols-3 gap-2.5"></div>
-      <p class="mt-10 text-xs text-zinc-600">Запази този линк — ще го ползваш и следващата седмица.</p>
+      <h1 class="mt-8 font-display text-headline font-semibold">Отчетът е изпратен</h1>
+      <p class="mt-2 max-w-sm text-small text-muted">Благодарим, <span id="success-name" class="text-fg"></span>. <span id="success-coach"></span></p>
+      <div id="success-summary" class="mt-8 grid w-full grid-cols-3 gap-2"></div>
+      <p class="mt-8 text-caption text-subtle">Запази този линк — ползваш го всяка седмица.</p>
     </section>
   </main>
 

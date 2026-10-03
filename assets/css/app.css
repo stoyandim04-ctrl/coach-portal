@@ -147,3 +147,44 @@ input[type='number'] { -moz-appearance: textfield; }
   *::before,
   *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
+/* ---------- Premium range (DESIGN.md §7 „Плъзгач“) ---------- */
+.fc-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.fc-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(to right, #c8f31d 0%, #c8f31d var(--fill, 50%), rgba(255, 255, 255, 0.1) var(--fill, 50%));
+}
+.fc-range::-moz-range-track { height: 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); }
+.fc-range::-moz-range-progress { height: 4px; border-radius: 999px; background: #c8f31d; }
+.fc-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: #f4f4f5;
+  border: 4px solid #09090b;
+  box-shadow: 0 0 0 1px rgba(200, 243, 29, 0.6), 0 4px 12px rgba(0, 0, 0, 0.6);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.fc-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f4f4f5;
+  border: 4px solid #09090b;
+  box-shadow: 0 0 0 1px rgba(200, 243, 29, 0.6);
+}
+.fc-range:active::-webkit-slider-thumb { transform: scale(1.12); }
+.fc-range:focus { outline: none; }
+.fc-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1px #c8f31d, 0 0 0 6px rgba(200, 243, 29, 0.15); }
+.fc-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 1px #c8f31d, 0 0 0 6px rgba(200, 243, 29, 0.15); }
