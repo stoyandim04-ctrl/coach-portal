@@ -1,0 +1,5 @@
+# Only the static site is deployed; keep internal docs and tooling private.
+*.md
+scripts/
+firebase.json
+*.rules
