@@ -10,7 +10,7 @@ Mobile-first прототип с тъмен интерфейс: треньоръ
 - [PRODUCT.md](PRODUCT.md) — проблем, персони, модули, обхват и метрики.
 - [DESIGN.md](DESIGN.md) — премиум тъмна дизайн система: токени за цветове, 2 шрифта (Space Grotesk + Inter), 6 размера текст и строга скала от 4 px.
 
-Мигрираните секции (засега **Треньорско табло**) зареждат `design-tokens.js` + `tailwind.strict.js`, които **подменят** стандартната Tailwind скала. Клас извън системата просто не работи. Проверка:
+Всички страници зареждат `design-tokens.js` + `tailwind.strict.js`, които **подменят** стандартната Tailwind скала. Клас извън системата просто не работи. Проверка:
 
 ```bash
 node scripts/design-lint.mjs
@@ -47,7 +47,8 @@ assets/
   css/app.css                  слайдери, анимации, safe-area
   js/
     config.js                  избор на backend + Firebase конфигурация
-    tailwind.config.js         тема (цветове, шрифт)
+    design-tokens.js           дизайн токени (цветове, шрифтове, скали)
+    tailwind.strict.js         строга Tailwind тема от токените
     lib/utils.js               DOM, дати, ID, компресия на снимки
     lib/model.js               валидация, статуси, производни данни
     lib/ui.js                  икони, toast, модали, lightbox, confirm

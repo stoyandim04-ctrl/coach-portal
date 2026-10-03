@@ -2,8 +2,7 @@
 
 :root {
   color-scheme: dark;
-  --bg: #07080a;
-  --brand: #c8f31d;
+  --bg: #09090b; /* = canvas token */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -20,14 +19,6 @@ body {
 body {
   min-height: 100dvh;
   overscroll-behavior-y: none;
-}
-
-/* Subtle ambient glow behind the content */
-.bg-ambient {
-  background:
-    radial-gradient(60rem 30rem at 85% -10%, rgba(200, 243, 29, 0.08), transparent 60%),
-    radial-gradient(40rem 30rem at -10% 10%, rgba(56, 189, 248, 0.05), transparent 60%),
-    var(--bg);
 }
 
 .pt-safe { padding-top: var(--safe-top); }
@@ -48,39 +39,6 @@ input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type='number'] { -moz-appearance: textfield; }
 
-/* ---------- Range slider (sleep / energy) ---------- */
-.range {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 10px;
-  border-radius: 999px;
-  background: linear-gradient(to right, var(--brand) 0%, var(--brand) var(--fill, 50%), #1e222a var(--fill, 50%), #1e222a 100%);
-  outline: none;
-  touch-action: pan-y;
-}
-.range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #fff;
-  border: 4px solid var(--brand);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-.range::-webkit-slider-thumb:active { transform: scale(1.15); }
-.range::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #fff;
-  border: 4px solid var(--brand);
-  cursor: pointer;
-}
-.range:focus-visible { box-shadow: 0 0 0 3px rgba(200, 243, 29, 0.35); }
-
 /* ---------- Animations ---------- */
 @keyframes fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes sheet-in { from { transform: translateY(100%); } to { transform: none; } }
@@ -92,7 +50,6 @@ input[type='number'] { -moz-appearance: textfield; }
 @keyframes shimmer { 100% { transform: translateX(100%); } }
 
 .animate-fade-in { animation: fade-in 0.35s ease both; }
-.animate-pop-in { animation: pop-in 0.22s ease both; }
 .animate-toast-in { animation: toast-in 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
 
 /* Modal: bottom sheet on mobile, centred dialog on larger screens */
@@ -126,17 +83,6 @@ input[type='number'] { -moz-appearance: textfield; }
   transform: translateX(-100%);
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
   animation: shimmer 1.4s infinite;
-}
-
-/* Status dot pulse for "on time" clients */
-.dot-pulse { position: relative; }
-.dot-pulse::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: inherit;
-  animation: ring 2s ease-out infinite;
 }
 
 /* Photo slot */
