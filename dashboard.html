@@ -3,103 +3,102 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#07080A" />
+  <meta name="theme-color" content="#09090B" />
   <meta name="robots" content="noindex" />
-  <title>Панел · FitCheck</title>
+  <title>Табло · FitCheck</title>
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="assets/js/tailwind.config.js"></script>
+  <script src="assets/js/design-tokens.js"></script>
+  <script src="assets/js/tailwind.strict.js"></script>
   <link rel="stylesheet" href="assets/css/app.css" />
 </head>
-<body class="bg-ambient font-sans text-zinc-100">
+<body class="bg-canvas font-sans text-body text-fg">
 
-  <header class="pt-safe sticky top-0 z-30 border-b border-white/5 bg-ink-950/75 backdrop-blur-xl">
-    <div class="mx-auto flex h-16 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
-      <a href="dashboard.html" class="flex items-center gap-2.5">
-        <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-ink-950 shadow-glow"><i data-icon="check" class="h-5 w-5"></i></span>
-        <span class="text-lg font-bold tracking-tight">FitCheck</span>
+  <!-- App bar -->
+  <header class="pt-safe sticky top-0 z-30 border-b border-line bg-canvas/80 backdrop-blur">
+    <div class="mx-auto flex h-14 max-w-3xl items-center justify-between gap-4 px-4 sm:px-6">
+      <a href="dashboard.html#/" class="flex items-center gap-2" aria-label="FitCheck — към таблото">
+        <span class="inline-flex h-8 w-8 items-center justify-center rounded-sm bg-accent text-accent-fg"><i data-icon="check" class="h-5 w-5"></i></span>
+        <span class="font-display text-title font-semibold">FitCheck</span>
       </a>
       <div class="flex items-center gap-2">
-        <span id="backend-badge" class="hidden rounded-full bg-amber-400/10 px-2.5 py-1 text-[11px] font-semibold text-amber-300 ring-1 ring-amber-400/20">Демо режим</span>
-        <div id="coach-chip" class="hidden items-center gap-2 rounded-full bg-white/5 py-1 pl-1 pr-3 ring-1 ring-white/10">
-          <span id="coach-avatar" class="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-xs font-bold text-ink-950"></span>
-          <span id="coach-name" class="max-w-[10rem] truncate text-sm font-medium"></span>
-        </div>
-        <button id="logout-btn" class="inline-flex h-10 w-10 items-center justify-center rounded-xl text-zinc-400 hover:bg-white/5 hover:text-white" aria-label="Изход" title="Изход">
+        <span id="backend-badge" class="hidden h-8 items-center rounded-full bg-warning/10 px-3 text-caption font-medium text-warning ring-1 ring-warning/20">Демо</span>
+        <span id="coach-avatar" class="hidden h-8 w-8 items-center justify-center rounded-full bg-raised font-display text-caption font-semibold text-fg ring-1 ring-line" title=""></span>
+        <button id="logout-btn" class="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted hover:bg-white/5 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" aria-label="Изход" title="Изход">
           <i data-icon="logout" class="h-5 w-5"></i>
         </button>
       </div>
     </div>
   </header>
 
-  <main id="app" class="mx-auto max-w-5xl px-4 pb-32 pt-6 sm:px-6" aria-live="polite">
+  <main id="app" class="mx-auto max-w-3xl px-4 pb-16 pt-6 sm:px-6 sm:pt-8" aria-live="polite">
     <!-- Initial skeleton -->
-    <div class="space-y-4">
-      <div class="skeleton h-8 w-48 rounded-lg"></div>
-      <div class="grid grid-cols-3 gap-3"><div class="skeleton h-24 rounded-2xl"></div><div class="skeleton h-24 rounded-2xl"></div><div class="skeleton h-24 rounded-2xl"></div></div>
-      <div class="skeleton h-20 rounded-2xl"></div><div class="skeleton h-20 rounded-2xl"></div><div class="skeleton h-20 rounded-2xl"></div>
+    <div class="flex flex-col gap-8">
+      <div class="skeleton h-12 w-1/2 rounded-md"></div>
+      <div class="grid grid-cols-3 gap-2"><div class="skeleton h-16 rounded-lg"></div><div class="skeleton h-16 rounded-lg"></div><div class="skeleton h-16 rounded-lg"></div></div>
+      <div class="flex flex-col gap-2"><div class="skeleton h-16 rounded-lg"></div><div class="skeleton h-16 rounded-lg"></div><div class="skeleton h-16 rounded-lg"></div></div>
     </div>
   </main>
 
-  <!-- Floating action button (mobile) -->
-  <button id="fab-add" class="bottom-safe fixed right-4 z-20 hidden h-14 items-center gap-2 rounded-2xl bg-brand pl-4 pr-5 font-semibold text-ink-950 shadow-glow transition active:scale-95 sm:hidden">
+  <!-- Floating action (mobile only) -->
+  <button id="fab-add" class="bottom-safe fixed right-4 z-20 hidden h-14 items-center gap-2 rounded-full bg-accent px-6 text-small font-semibold text-accent-fg shadow-accent active:scale-95 sm:hidden">
     <i data-icon="plus" class="h-5 w-5"></i> Нов клиент
   </button>
 
-  <!-- Add client modal -->
-  <div id="client-modal" data-modal class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="client-modal-title" aria-hidden="true">
-    <div data-modal-backdrop class="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"></div>
+  <!-- Add client: bottom sheet on mobile, dialog on desktop -->
+  <div id="client-modal" data-modal class="fixed inset-0 z-40 hidden" role="dialog" aria-modal="true" aria-labelledby="client-modal-title" aria-hidden="true">
+    <div data-modal-backdrop class="animate-fade-in absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="pointer-events-none absolute inset-0 flex items-end justify-center sm:items-center sm:p-6">
-      <div class="modal-panel pointer-events-auto relative max-h-[92dvh] w-full overflow-y-auto rounded-t-[2rem] bg-ink-850 px-5 pb-safe pt-3 ring-1 ring-white/10 sm:max-w-md sm:rounded-[2rem] sm:p-8">
-        <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-white/15 sm:hidden"></div>
-        <button data-close class="absolute right-4 top-4 rounded-full p-2 text-zinc-400 hover:bg-white/5 hover:text-white" aria-label="Затвори"><i data-icon="x" class="h-5 w-5"></i></button>
+      <div class="modal-panel pb-safe pointer-events-auto relative max-h-full w-full overflow-y-auto rounded-t-xl bg-surface px-4 pt-3 shadow-overlay ring-1 ring-line sm:max-w-md sm:rounded-xl sm:p-6">
+        <div class="mx-auto mb-4 h-1 w-8 rounded-full bg-line sm:hidden"></div>
+        <button data-close class="absolute right-2 top-2 inline-flex h-10 w-10 items-center justify-center rounded-full text-muted hover:bg-white/5 hover:text-fg sm:right-4 sm:top-4" aria-label="Затвори"><i data-icon="x" class="h-5 w-5"></i></button>
 
-        <!-- Step 1: form -->
+        <!-- Step 1: details -->
         <section id="client-step-form">
-          <h2 id="client-modal-title" class="pr-10 text-2xl font-bold tracking-tight">Нов клиент</h2>
-          <p class="mt-1 text-sm text-zinc-400">Ще генерираме личен линк за седмичен чек-ин.</p>
-          <form id="client-form" class="mt-6 space-y-4" novalidate>
+          <h2 id="client-modal-title" class="pr-12 font-display text-title font-semibold">Нов клиент</h2>
+          <p class="mt-1 text-small text-muted">Ще генерираме личен линк за седмичен чек-ин.</p>
+          <form id="client-form" class="mt-6 flex flex-col gap-4" novalidate>
             <div>
-              <label for="client-name" class="mb-1.5 block text-sm font-medium text-zinc-300">Име на клиента *</label>
+              <label for="client-name" class="mb-2 block text-small font-medium text-muted">Име на клиента</label>
               <input id="client-name" name="name" autocomplete="off" placeholder="напр. Мария Петрова" required
-                class="h-12 w-full rounded-xl bg-ink-900 px-4 text-white placeholder-zinc-600 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-brand" />
+                class="h-12 w-full rounded-md bg-raised px-4 text-body text-fg placeholder-subtle ring-1 ring-line focus:outline-none focus:ring-2 focus:ring-accent" />
             </div>
             <div>
-              <label for="client-email" class="mb-1.5 block text-sm font-medium text-zinc-300">Имейл <span class="text-zinc-500">(по избор)</span></label>
+              <label for="client-email" class="mb-2 block text-small font-medium text-muted">Имейл <span class="text-subtle">· по избор</span></label>
               <input id="client-email" name="email" type="email" inputmode="email" autocomplete="off" placeholder="client@email.com"
-                class="h-12 w-full rounded-xl bg-ink-900 px-4 text-white placeholder-zinc-600 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-brand" />
+                class="h-12 w-full rounded-md bg-raised px-4 text-body text-fg placeholder-subtle ring-1 ring-line focus:outline-none focus:ring-2 focus:ring-accent" />
             </div>
             <div>
-              <label for="client-goal" class="mb-1.5 block text-sm font-medium text-zinc-300">Цел <span class="text-zinc-500">(по избор)</span></label>
+              <label for="client-goal" class="mb-2 block text-small font-medium text-muted">Цел <span class="text-subtle">· по избор</span></label>
               <input id="client-goal" name="goal" autocomplete="off" placeholder="напр. −5 кг за 12 седмици" maxlength="140"
-                class="h-12 w-full rounded-xl bg-ink-900 px-4 text-white placeholder-zinc-600 ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-brand" />
+                class="h-12 w-full rounded-md bg-raised px-4 text-body text-fg placeholder-subtle ring-1 ring-line focus:outline-none focus:ring-2 focus:ring-accent" />
             </div>
-            <p id="client-error" class="hidden rounded-xl bg-rose-500/10 px-4 py-3 text-sm text-rose-300 ring-1 ring-rose-500/20" role="alert"></p>
-            <button id="client-submit" type="submit" class="inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-base font-semibold text-ink-950 hover:bg-brand-400 disabled:opacity-70">
+            <p id="client-error" class="hidden rounded-md bg-danger/10 p-3 text-small text-danger ring-1 ring-danger/20" role="alert"></p>
+            <button id="client-submit" type="submit" class="mt-2 inline-flex h-14 w-full items-center justify-center gap-2 rounded-md bg-accent text-small font-semibold text-accent-fg shadow-accent hover:opacity-90 disabled:opacity-60 sm:h-12">
               <i data-icon="link" class="h-5 w-5"></i> Генерирай линк
             </button>
           </form>
         </section>
 
-        <!-- Step 2: link created -->
-        <section id="client-step-link" class="hidden text-center">
-          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand/15 text-brand"><i data-icon="check" class="h-8 w-8"></i></div>
-          <h2 class="mt-4 text-2xl font-bold tracking-tight">Клиентът е добавен!</h2>
-          <p class="mt-1 text-sm text-zinc-400">Изпрати този линк на <span id="created-client-name" class="font-semibold text-white"></span>. Той е постоянен — клиентът го ползва всяка седмица.</p>
-          <div class="mt-5 flex items-center gap-2 rounded-2xl bg-ink-900 p-2 pl-4 text-left ring-1 ring-white/10">
-            <span id="created-link" class="min-w-0 flex-1 truncate font-mono text-xs text-zinc-300"></span>
-            <button id="copy-created-link" class="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-xl bg-white/10 px-3 text-sm font-semibold hover:bg-white/15"><i data-icon="copy" class="h-4 w-4"></i> Копирай</button>
+        <!-- Step 2: link ready -->
+        <section id="client-step-link" class="hidden">
+          <div class="flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 text-accent"><i data-icon="check" class="h-5 w-5"></i></div>
+          <h2 class="mt-4 font-display text-title font-semibold">Линкът е готов</h2>
+          <p class="mt-1 text-small text-muted">Изпрати го на <span id="created-client-name" class="font-medium text-fg"></span>. Той е постоянен — клиентът го ползва всяка седмица.</p>
+          <div class="mt-6 flex items-center gap-2 rounded-md bg-raised p-2 pl-4 ring-1 ring-line">
+            <span id="created-link" class="min-w-0 flex-1 truncate text-caption text-muted"></span>
+            <button id="copy-created-link" class="inline-flex h-10 shrink-0 items-center gap-2 rounded-sm bg-white/5 px-3 text-small font-medium text-fg hover:bg-white/10"><i data-icon="copy" class="h-4 w-4"></i> Копирай</button>
           </div>
-          <p id="local-link-warning" class="mt-3 hidden text-left text-xs leading-relaxed text-amber-300/80">
-            Демо режим: линкът работи само в този браузър. За реални клиенти на други устройства свържете Firebase (виж README).
+          <p id="local-link-warning" class="mt-3 hidden text-caption text-warning">
+            Демо режим: линкът работи само в този браузър. За клиенти на други устройства свържете Firebase (виж README).
           </p>
-          <div class="mt-6 grid grid-cols-2 gap-3">
-            <button id="share-created-link" class="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-white/5 font-semibold ring-1 ring-white/10 hover:bg-white/10"><i data-icon="share" class="h-4 w-4"></i> Сподели</button>
-            <button id="open-created-client" class="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-brand font-semibold text-ink-950 hover:bg-brand-400">Към профила</button>
+          <div class="mt-6 grid grid-cols-2 gap-2">
+            <button id="share-created-link" class="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-raised text-small font-medium text-fg ring-1 ring-line hover:bg-white/5"><i data-icon="share" class="h-4 w-4"></i> Сподели</button>
+            <button id="open-created-client" class="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-accent text-small font-semibold text-accent-fg hover:opacity-90">Към профила</button>
           </div>
         </section>
       </div>

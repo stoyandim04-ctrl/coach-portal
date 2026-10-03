@@ -5,6 +5,17 @@ Mobile-first прототип с тъмен интерфейс: треньоръ
 **Технологии:** HTML + Tailwind CSS (CDN) + Vanilla JS (ES modules). Без build стъпка.
 **Данни:** localStorage за бърз MVP или Firebase (Auth + Firestore + Storage). Превключва се с една настройка.
 
+## Продукт и дизайн
+
+- [PRODUCT.md](PRODUCT.md) — проблем, персони, модули, обхват и метрики.
+- [DESIGN.md](DESIGN.md) — премиум тъмна дизайн система: токени за цветове, 2 шрифта (Space Grotesk + Inter), 6 размера текст и строга скала от 4 px.
+
+Мигрираните секции (засега **Треньорско табло**) зареждат `design-tokens.js` + `tailwind.strict.js`, които **подменят** стандартната Tailwind скала. Клас извън системата просто не работи. Проверка:
+
+```bash
+node scripts/design-lint.mjs
+```
+
 ## Стартиране
 
 ES модулите изискват HTTP сървър (не работи с `file://`):

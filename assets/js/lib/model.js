@@ -20,10 +20,10 @@ export const MEASUREMENTS = [
 
 /** Check-in freshness indicator shown on the coach dashboard. */
 export const STATUS = {
-  ok: { key: 'ok', label: 'Навреме', dot: 'bg-emerald-400', text: 'text-emerald-300', badge: 'bg-emerald-400/10 text-emerald-300 ring-emerald-400/20' },
-  due: { key: 'due', label: 'Очаква се', dot: 'bg-amber-400', text: 'text-amber-300', badge: 'bg-amber-400/10 text-amber-300 ring-amber-400/20' },
-  late: { key: 'late', label: 'Просрочен', dot: 'bg-rose-500', text: 'text-rose-300', badge: 'bg-rose-500/10 text-rose-300 ring-rose-500/20' },
-  none: { key: 'none', label: 'Без чек-ин', dot: 'bg-zinc-500', text: 'text-zinc-400', badge: 'bg-zinc-500/10 text-zinc-400 ring-zinc-500/20' },
+  ok: { key: 'ok', label: 'Навреме', dot: 'bg-success', text: 'text-success', badge: 'bg-success/10 text-success ring-success/20' },
+  due: { key: 'due', label: 'Очаква се', dot: 'bg-warning', text: 'text-warning', badge: 'bg-warning/10 text-warning ring-warning/20' },
+  late: { key: 'late', label: 'Просрочен', dot: 'bg-danger', text: 'text-danger', badge: 'bg-danger/10 text-danger ring-danger/20' },
+  none: { key: 'none', label: 'Без чек-ин', dot: 'bg-subtle', text: 'text-subtle', badge: 'bg-white/5 text-muted ring-line' },
 };
 
 export function checkinStatus(lastCheckinAt, now = Date.now()) {

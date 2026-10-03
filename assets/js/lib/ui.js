@@ -51,8 +51,8 @@ export function hydrateIcons(root = document) {
   });
 }
 
-export const logoHtml = (size = 'h-9 w-9') => `
-  <span class="inline-flex ${size} items-center justify-center rounded-xl bg-brand text-ink-950 shadow-glow">
+export const logoHtml = () => `
+  <span class="inline-flex h-8 w-8 items-center justify-center rounded-sm bg-accent text-accent-fg">
     ${icon('check', 'h-5 w-5')}
   </span>`;
 
@@ -63,8 +63,8 @@ function toastRoot() {
   if (!root) {
     root = document.createElement('div');
     root.id = 'toast-root';
-    root.className = 'pointer-events-none fixed inset-x-0 top-0 z-[100] flex flex-col items-center gap-2 px-4 pt-safe';
-    root.style.paddingTop = 'calc(env(safe-area-inset-top, 0px) + 1rem)';
+    root.className = 'pointer-events-none fixed inset-x-0 top-0 z-50 flex flex-col items-center gap-2 px-4';
+    root.style.paddingTop = 'calc(env(safe-area-inset-top, 0px) + 16px)';
     root.setAttribute('aria-live', 'polite');
     document.body.appendChild(root);
   }
@@ -73,15 +73,15 @@ function toastRoot() {
 
 export function toast(message, type = 'success', timeout = 3200) {
   const styles = {
-    success: { ring: 'ring-brand/30', icon: icon('check', 'h-4 w-4'), iconBg: 'bg-brand text-ink-950' },
-    error: { ring: 'ring-rose-500/30', icon: icon('alert', 'h-4 w-4'), iconBg: 'bg-rose-500 text-white' },
-    info: { ring: 'ring-white/10', icon: icon('sparkles', 'h-4 w-4'), iconBg: 'bg-white/10 text-white' },
+    success: { icon: icon('check', 'h-4 w-4'), iconBg: 'bg-accent text-accent-fg' },
+    error: { icon: icon('alert', 'h-4 w-4'), iconBg: 'bg-danger/10 text-danger' },
+    info: { icon: icon('sparkles', 'h-4 w-4'), iconBg: 'bg-white/5 text-fg' },
   }[type] ?? {};
 
   const el = document.createElement('div');
-  el.className = `animate-toast-in pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-2xl bg-ink-800/95 px-4 py-3 text-sm text-white shadow-2xl ring-1 backdrop-blur ${styles.ring}`;
+  el.className = 'animate-toast-in pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-lg bg-raised p-4 font-sans text-small text-fg shadow-overlay ring-1 ring-line';
   el.setAttribute('role', type === 'error' ? 'alert' : 'status');
-  el.innerHTML = `<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${styles.iconBg}">${styles.icon}</span><span class="leading-snug">${escapeHtml(message)}</span>`;
+  el.innerHTML = `<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${styles.iconBg}">${styles.icon}</span><span>${escapeHtml(message)}</span>`;
   toastRoot().appendChild(el);
 
   setTimeout(() => {
@@ -147,11 +147,11 @@ export function setLoading(button, loading, loadingText) {
 
 export function openLightbox(src, caption = '') {
   const el = document.createElement('div');
-  el.className = 'fixed inset-0 z-[90] flex flex-col items-center justify-center bg-black/95 p-4 animate-fade-in';
+  el.className = 'animate-fade-in fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4';
   el.innerHTML = `
-    <button class="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20" style="top:calc(env(safe-area-inset-top,0px) + 1rem)" aria-label="Затвори">${icon('x')}</button>
-    <img src="${escapeHtml(src)}" alt="${escapeHtml(caption)}" class="max-h-[82dvh] max-w-full rounded-2xl object-contain shadow-2xl" />
-    ${caption ? `<p class="mt-4 text-sm text-zinc-400">${escapeHtml(caption)}</p>` : ''}`;
+    <button class="absolute right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-fg hover:bg-white/20" style="top:calc(env(safe-area-inset-top,0px) + 16px)" aria-label="Затвори">${icon('x')}</button>
+    <img src="${escapeHtml(src)}" alt="${escapeHtml(caption)}" class="max-h-full max-w-full rounded-lg object-contain shadow-overlay" style="max-height:80dvh" />
+    ${caption ? `<p class="mt-4 font-sans text-small text-muted">${escapeHtml(caption)}</p>` : ''}`;
   const close = () => { el.remove(); document.removeEventListener('keydown', onKey); };
   const onKey = (e) => e.key === 'Escape' && close();
   el.addEventListener('click', close);
@@ -163,15 +163,15 @@ export function openLightbox(src, caption = '') {
 export function confirmDialog({ title, message, confirmText = 'Потвърди', danger = false }) {
   return new Promise((resolve) => {
     const el = document.createElement('div');
-    el.className = 'fixed inset-0 z-[80] flex items-end justify-center sm:items-center';
+    el.className = 'fixed inset-0 z-50 flex items-end justify-center font-sans sm:items-center sm:p-6';
     el.innerHTML = `
-      <div class="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in" data-cancel></div>
-      <div class="modal-panel relative w-full max-w-sm rounded-t-3xl bg-ink-850 p-6 pb-safe ring-1 ring-white/10 sm:rounded-3xl sm:pb-6">
-        <h3 class="text-lg font-semibold text-white">${escapeHtml(title)}</h3>
-        <p class="mt-2 text-sm leading-relaxed text-zinc-400">${escapeHtml(message)}</p>
-        <div class="mt-6 grid grid-cols-2 gap-3">
-          <button data-cancel class="h-12 rounded-xl bg-white/5 font-medium text-zinc-200 ring-1 ring-white/10 hover:bg-white/10">Отказ</button>
-          <button data-ok class="h-12 rounded-xl font-semibold ${danger ? 'bg-rose-500 text-white hover:bg-rose-400' : 'bg-brand text-ink-950 hover:bg-brand-400'}">${escapeHtml(confirmText)}</button>
+      <div class="animate-fade-in absolute inset-0 bg-black/70 backdrop-blur-sm" data-cancel></div>
+      <div class="modal-panel pb-safe relative w-full max-w-sm rounded-t-xl bg-surface p-6 shadow-overlay ring-1 ring-line sm:rounded-xl sm:pb-6" role="alertdialog" aria-modal="true">
+        <h3 class="font-display text-title font-semibold text-fg">${escapeHtml(title)}</h3>
+        <p class="mt-2 text-small text-muted">${escapeHtml(message)}</p>
+        <div class="mt-6 grid grid-cols-2 gap-2">
+          <button data-cancel class="h-12 rounded-md bg-raised text-small font-medium text-fg ring-1 ring-line hover:bg-white/5">Отказ</button>
+          <button data-ok class="h-12 rounded-md text-small font-semibold ${danger ? 'bg-danger text-canvas hover:opacity-90' : 'bg-accent text-accent-fg hover:opacity-90'}">${escapeHtml(confirmText)}</button>
         </div>
       </div>`;
     const done = (value) => { el.remove(); resolve(value); };

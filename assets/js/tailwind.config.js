@@ -1,12 +1,18 @@
-/* Shared Tailwind (Play CDN) theme. Loaded right after cdn.tailwindcss.com on every page. */
+/*
+ * Legacy Tailwind theme for pages not yet migrated to DESIGN.md (landing, check-in form).
+ * It keeps the default scale and additionally exposes the design tokens, so shared
+ * components (lib/ui.js) written with tokens render the same everywhere.
+ * Requires design-tokens.js to be loaded first.
+ */
+const fcTokens = window.FitCheckDesign;
 tailwind.config = {
   darkMode: 'class',
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
-      },
+      fontFamily: fcTokens.fontFamily,
+      fontSize: fcTokens.fontSize,
       colors: {
+        ...fcTokens.colors,
         ink: {
           950: '#07080A',
           900: '#0C0E11',
@@ -27,6 +33,7 @@ tailwind.config = {
         },
       },
       boxShadow: {
+        ...fcTokens.boxShadow,
         glow: '0 0 0 1px rgba(200,243,29,.25), 0 8px 30px -8px rgba(200,243,29,.35)',
         card: '0 1px 0 0 rgba(255,255,255,.04) inset, 0 10px 30px -15px rgba(0,0,0,.6)',
       },
