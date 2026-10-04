@@ -1,0 +1,13 @@
+{
+  "name": "Coach Portal",
+  "short_name": "Coach Portal",
+  "lang": "bg",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0E0E10",
+  "theme_color": "#0E0E10",
+  "icons": [
+    { "src": "assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

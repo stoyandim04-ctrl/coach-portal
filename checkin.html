@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0E0E10" />
+  <meta name="robots" content="noindex" />
+  <title>Check-in · Coach Portal</title>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/design-tokens.js"></script>
+  <script src="assets/js/tailwind.strict.js"></script>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body class="bg-canvas font-sans text-body text-fg">
+  <header class="pt-safe sticky top-0 z-20 bg-canvas">
+    <div class="mx-auto flex h-14 max-w-lg items-center gap-2 px-4">
+      <a id="close-link" href="client.html" class="hidden" aria-label="Затвори"></a>
+      <p id="step-label" class="flex-1 text-small text-muted" aria-live="polite"></p>
+      <p id="week-label" class="text-small text-subtle"></p>
+    </div>
+    <div id="progress" class="mx-auto hidden max-w-lg gap-1 px-4 pb-3" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-label="Стъпка"></div>
+  </header>
+
+  <main id="view" class="mx-auto w-full max-w-lg px-4 pb-action">
+    <div class="flex flex-col gap-2 pt-4"><div class="skeleton h-10 w-2/3 rounded-md"></div><div class="skeleton h-chart rounded-md"></div></div>
+  </main>
+
+  <div id="action-bar" class="pb-safe fixed inset-x-0 bottom-0 z-20 hidden border-t border-line bg-canvas px-4 pt-3">
+    <div class="mx-auto flex max-w-lg gap-2">
+      <button id="back-btn" type="button" class="tap inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-line bg-surface text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" aria-label="Назад"></button>
+      <button id="next-btn" type="button" class="tap inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-md bg-fg px-5 text-body font-medium text-canvas hover:bg-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">Напред</button>
+    </div>
+  </div>
+
+  <script type="module" src="assets/js/pages/checkin.js"></script>
+</body>
+</html>
