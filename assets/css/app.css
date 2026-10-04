@@ -1,15 +1,20 @@
-/* FitCheck — custom styles that complement Tailwind utilities. */
+/* Coach Portal — base styles that complement Tailwind utilities (see DESIGN.md). */
 
 :root {
   color-scheme: dark;
-  --bg: #09090b; /* = canvas token */
+  --canvas: #0e0e10;
+  --surface: #161618;
+  --line: #2a2a2e;
+  --fg: #ececee;
+  --accent: #8b9cff;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nav-h: 64px;
 }
 
 html,
 body {
-  background: var(--bg);
+  background: var(--canvas);
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -21,49 +26,48 @@ body {
   overscroll-behavior-y: none;
 }
 
-.pt-safe { padding-top: var(--safe-top); }
-.pb-safe { padding-bottom: calc(var(--safe-bottom) + 1rem); }
-.bottom-safe { bottom: calc(var(--safe-bottom) + 1rem); }
-
-/* Hide scrollbars on horizontal chip rows */
-.no-scrollbar { scrollbar-width: none; }
-.no-scrollbar::-webkit-scrollbar { display: none; }
-
-/* Prevent iOS zoom on focus: inputs must be >= 16px */
+/* Inputs must be >= 16px so iOS doesn't zoom on focus */
 input,
 select,
 textarea { font-size: 16px; }
 
-/* Number inputs without spinners */
-input[type='number']::-webkit-outer-spin-button,
-input[type='number']::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-input[type='number'] { -moz-appearance: textfield; }
+/* ---------- Safe-area helpers ---------- */
+.pt-safe { padding-top: var(--safe-top); }
+.pb-safe { padding-bottom: calc(var(--safe-bottom) + 16px); }
 
-/* ---------- Animations ---------- */
-@keyframes fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* Bottom navigation sits above the home indicator */
+.app-nav { padding-bottom: var(--safe-bottom); }
+/* Page content clears the bottom navigation */
+.pb-nav { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 32px); }
+/* Content clears the sticky action bar (check-in) */
+.pb-action { padding-bottom: calc(var(--safe-bottom) + 112px); }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ---------- Motion ---------- */
+@keyframes fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes sheet-in { from { transform: translateY(100%); } to { transform: none; } }
-@keyframes pop-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
-@keyframes toast-in { from { opacity: 0; transform: translateY(-12px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes pop-in { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 @keyframes check-draw { to { stroke-dashoffset: 0; } }
-@keyframes ring { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(1.6); opacity: 0; } }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes shimmer { 100% { transform: translateX(100%); } }
 
-.animate-fade-in { animation: fade-in 0.35s ease both; }
-.animate-toast-in { animation: toast-in 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+.animate-fade-in { animation: fade-in 0.25s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+.animate-toast-in { animation: toast-in 0.2s ease both; }
 
-/* Modal: bottom sheet on mobile, centred dialog on larger screens */
+/* Sheet: slides up on phones, fades in as a dialog on larger screens */
 .modal-panel { animation: sheet-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
 @media (min-width: 640px) {
-  .modal-panel { animation: pop-in 0.22s ease both; }
+  .modal-panel { animation: pop-in 0.2s ease both; }
 }
 
 .check-path {
   stroke-dasharray: 48;
   stroke-dashoffset: 48;
-  animation: check-draw 0.5s 0.2s ease forwards;
+  animation: check-draw 0.45s 0.15s ease forwards;
 }
-.success-ring { animation: ring 1.6s ease-out infinite; }
 
 .spinner {
   width: 1.1em;
@@ -75,62 +79,65 @@ input[type='number'] { -moz-appearance: textfield; }
   display: inline-block;
 }
 
-.skeleton { position: relative; overflow: hidden; background: #16191f; }
+.skeleton { position: relative; overflow: hidden; background: var(--surface); }
 .skeleton::after {
   content: '';
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
   animation: shimmer 1.4s infinite;
 }
 
+/* Pressed state for tappable rows and buttons (native feel) */
+.tap { transition: background-color 0.15s ease, transform 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
+.tap:active { transform: scale(0.985); }
+
 /* Photo slot */
 .photo-slot { aspect-ratio: 3 / 4; }
+
+/* ---------- Range (1–10 scores) ---------- */
+.cp-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.cp-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--fg) 0%, var(--fg) var(--fill, 50%), var(--line) var(--fill, 50%));
+}
+.cp-range::-moz-range-track { height: 4px; border-radius: 999px; background: var(--line); }
+.cp-range::-moz-range-progress { height: 4px; border-radius: 999px; background: var(--fg); }
+.cp-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: var(--fg);
+  border: 4px solid var(--canvas);
+  box-shadow: 0 0 0 1px var(--line);
+  transition: transform 0.15s ease;
+}
+.cp-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--fg);
+  border: 4px solid var(--canvas);
+}
+.cp-range:active::-webkit-slider-thumb { transform: scale(1.1); }
+.cp-range:focus { outline: none; }
+.cp-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px var(--accent); }
+.cp-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px var(--accent); }
 
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
-
-/* ---------- Premium range (DESIGN.md §7 „Плъзгач“) ---------- */
-.fc-range {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 24px;
-  background: transparent;
-  cursor: pointer;
-  touch-action: pan-y;
-}
-.fc-range::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(to right, #c8f31d 0%, #c8f31d var(--fill, 50%), rgba(255, 255, 255, 0.1) var(--fill, 50%));
-}
-.fc-range::-moz-range-track { height: 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); }
-.fc-range::-moz-range-progress { height: 4px; border-radius: 999px; background: #c8f31d; }
-.fc-range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 24px;
-  height: 24px;
-  margin-top: -10px;
-  border-radius: 50%;
-  background: #f4f4f5;
-  border: 4px solid #09090b;
-  box-shadow: 0 0 0 1px rgba(200, 243, 29, 0.6), 0 4px 12px rgba(0, 0, 0, 0.6);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-}
-.fc-range::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #f4f4f5;
-  border: 4px solid #09090b;
-  box-shadow: 0 0 0 1px rgba(200, 243, 29, 0.6);
-}
-.fc-range:active::-webkit-slider-thumb { transform: scale(1.12); }
-.fc-range:focus { outline: none; }
-.fc-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1px #c8f31d, 0 0 0 6px rgba(200, 243, 29, 0.15); }
-.fc-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 1px #c8f31d, 0 0 0 6px rgba(200, 243, 29, 0.15); }

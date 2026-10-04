@@ -8,7 +8,7 @@
  * See README.md → "Firebase".
  */
 export const APP_CONFIG = {
-  appName: 'FitCheck',
+  appName: 'Coach Portal',
   backend: 'local',
 
   firebase: {

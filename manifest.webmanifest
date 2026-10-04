@@ -1,13 +1,13 @@
 {
-  "name": "FitCheck — Седмичен чек-ин портал",
-  "short_name": "FitCheck",
+  "name": "Coach Portal",
+  "short_name": "Coach Portal",
   "lang": "bg",
-  "start_url": "./dashboard.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#07080A",
-  "theme_color": "#07080A",
+  "background_color": "#0E0E10",
+  "theme_color": "#0E0E10",
   "icons": [
-    { "src": "assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ]
 }

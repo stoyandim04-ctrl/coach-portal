@@ -1,52 +1,93 @@
 rules_version = '2';
 
-// FitCheck — Firestore security rules.
-// Coaches only see their own data. Clients (unauthenticated) can only:
-//   • read a single checkinLinks/{token} document when they know the exact token
-//   • create a check-in that matches that link.
+// Coach Portal — Firestore security rules.
+//   • users/{uid}: own profile only; role is set once ('coach' | 'client') and can't change.
+//   • Coaches see only their own clients, check-ins and notes.
+//   • Clients see their own client record (program) and their own check-ins.
+//   • Anyone holding a link token may read that link and submit a check-in for it.
 service cloud.firestore {
   match /databases/{database}/documents {
 
     function signedIn() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+    function role() { return get(/databases/$(database)/documents/users/$(uid())).data.role; }
+    function isCoach() { return signedIn() && role() == 'coach'; }
+    function isClient() { return signedIn() && role() == 'client'; }
     function isScore(v) { return v is int && v >= 1 && v <= 10; }
+    function optionalScore(data, key) { return !(key in data) || isScore(data[key]); }
 
-    match /coaches/{uid} {
-      allow read, write: if signedIn() && request.auth.uid == uid;
+    match /users/{userId} {
+      allow read: if signedIn() && uid() == userId;
+      allow create: if signedIn() && uid() == userId
+        && request.resource.data.role in ['coach', 'client']
+        && request.resource.data.name is string;
+      allow update: if signedIn() && uid() == userId
+        && request.resource.data.role == resource.data.role;
     }
 
     match /clients/{clientId} {
-      allow read, update, delete: if signedIn() && resource.data.coachId == request.auth.uid;
-      allow create: if signedIn() && request.resource.data.coachId == request.auth.uid;
+      allow read: if signedIn() && (resource.data.coachId == uid() || resource.data.userId == uid());
+      allow create: if isCoach() && request.resource.data.coachId == uid() && !('userId' in request.resource.data);
+      allow delete: if isCoach() && resource.data.coachId == uid();
+
+      // Coach edits everything except the client account link.
+      allow update: if isCoach() && resource.data.coachId == uid()
+        && request.resource.data.coachId == uid()
+        && request.resource.data.get('userId', null) == resource.data.get('userId', null);
+
+      // A client claims an unclaimed record by proving they hold its token.
+      allow update: if isClient()
+        && resource.data.get('userId', null) == null
+        && request.resource.data.userId == uid()
+        && request.resource.data.claimToken == resource.data.token
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['userId', 'claimToken']);
     }
 
     match /checkinLinks/{token} {
       allow get: if true;          // exact-token lookup only
       allow list: if false;        // no enumeration of links
-      allow create: if signedIn() && request.resource.data.coachId == request.auth.uid;
-      allow delete: if signedIn() && resource.data.coachId == request.auth.uid;
+      allow create: if isCoach() && request.resource.data.coachId == uid();
+      allow delete: if isCoach() && resource.data.coachId == uid();
+      // Claiming: knowing the document id (the token) is the proof.
+      allow update: if isClient()
+        && resource.data.get('clientUserId', null) == null
+        && request.resource.data.clientUserId == uid()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['clientUserId']);
     }
 
     match /checkins/{checkinId} {
-      function linkPath() {
-        return /databases/$(database)/documents/checkinLinks/$(request.resource.data.token);
-      }
+      function linkPath() { return /databases/$(database)/documents/checkinLinks/$(request.resource.data.token); }
+      function link() { return get(linkPath()).data; }
 
       allow create: if request.resource.data.token is string
         && exists(linkPath())
-        && get(linkPath()).data.clientId == request.resource.data.clientId
-        && get(linkPath()).data.coachId == request.resource.data.coachId
+        && link().clientId == request.resource.data.clientId
+        && link().coachId == request.resource.data.coachId
+        && request.resource.data.get('clientUserId', null) == link().get('clientUserId', null)
         && request.resource.data.weight is number
         && request.resource.data.weight >= 25 && request.resource.data.weight <= 350
         && isScore(request.resource.data.sleep)
         && isScore(request.resource.data.energy)
+        && optionalScore(request.resource.data, 'stress')
+        && optionalScore(request.resource.data, 'hunger')
+        && optionalScore(request.resource.data, 'adherence')
+        && optionalScore(request.resource.data, 'performance')
         && request.resource.data.comment is string && request.resource.data.comment.size() <= 2000
         && !('coachNote' in request.resource.data);
 
-      allow read, delete: if signedIn() && resource.data.coachId == request.auth.uid;
+      allow read: if signedIn() && (resource.data.coachId == uid() || resource.data.get('clientUserId', null) == uid());
+      allow delete: if isCoach() && resource.data.coachId == uid();
 
-      // Coaches may only add / edit their feedback note.
-      allow update: if signedIn() && resource.data.coachId == request.auth.uid
+      // Coaches may only add / edit their reply.
+      allow update: if isCoach() && resource.data.coachId == uid()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['coachNote', 'coachNoteAt']);
+    }
+
+    // Private coach notes about a client — never visible to the client.
+    match /clientNotes/{clientId} {
+      allow read, delete: if isCoach() && resource.data.coachId == uid();
+      allow create, update: if isCoach() && request.resource.data.coachId == uid()
+        && get(/databases/$(database)/documents/clients/$(clientId)).data.coachId == uid();
     }
   }
 }

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0E0E10" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="description" content="Coach Portal — клиенти, прогрес, програми и check-ins на едно място." />
+  <meta name="robots" content="noindex" />
   <title>Coach Portal</title>
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
   <link rel="manifest" href="manifest.webmanifest" />
@@ -19,9 +19,11 @@
   <link rel="stylesheet" href="assets/css/app.css" />
 </head>
 <body class="bg-canvas font-sans text-body text-fg">
-  <main id="app" class="pt-safe pb-safe mx-auto flex min-h-screen w-full max-w-sm flex-col px-5" aria-live="polite">
-    <div class="flex flex-1 items-center justify-center"><span class="spinner text-subtle"></span></div>
+  <main id="view" class="pt-safe pb-nav mx-auto w-full max-w-lg px-4" aria-live="polite">
+    <div class="flex flex-col gap-2 pt-16"><div class="skeleton h-10 w-2/3 rounded-md"></div><div class="skeleton h-chart rounded-md"></div></div>
   </main>
-  <script type="module" src="assets/js/pages/entry.js"></script>
+  <div id="nav"></div>
+  <div id="sheets"></div>
+  <script type="module" src="assets/js/pages/coach.js"></script>
 </body>
 </html>

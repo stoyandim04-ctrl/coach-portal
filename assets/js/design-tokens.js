@@ -1,51 +1,49 @@
-/* FitCheck design tokens — single source of truth for DESIGN.md. Classic script (no module). */
-window.FitCheckDesign = {
+/* Coach Portal design tokens — single source of truth for DESIGN.md. Classic script (no module). */
+window.CoachPortalDesign = {
+  // Neutral graphite palette. One restrained accent; semantic colors are muted.
   colors: {
-    canvas: '#09090B',
-    surface: '#111113',
-    raised: '#1A1A1E',
-    line: '#26262B',
-    fg: '#F4F4F5',
-    muted: '#A1A1AA',
-    subtle: '#71717A',
-    accent: '#C8F31D',
-    'accent-fg': '#0B0C06',
-    success: '#4ADE80',
-    warning: '#FBBF24',
-    danger: '#F87171',
-    info: '#60A5FA',
+    canvas: '#0E0E10', // page background
+    surface: '#161618', // rows, cards, sheets
+    raised: '#1E1E21', // inputs, pressed/hover states
+    line: '#2A2A2E', // borders and dividers
+    fg: '#ECECEE', // primary text (soft white)
+    muted: '#A1A1A8', // secondary text
+    subtle: '#6F6F77', // metadata, placeholders
+    accent: '#8B9CFF', // interaction state only: focus, selection, progress
+    success: '#4FAF84',
+    warning: '#D4A24C',
+    danger: '#E2686A',
   },
 
-  // Two typefaces only.
+  // One typeface.
   fontFamily: {
-    sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
-    display: ['"Space Grotesk"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+    sans: ['Geist', 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
   },
 
-  // Six-step type scale: [size, line-height].
+  // Restrained six-step type scale: [size, line-height].
   fontSize: {
-    caption: ['12px', { lineHeight: '16px' }],
+    caption: ['13px', { lineHeight: '18px' }],
     small: ['14px', { lineHeight: '20px' }],
     body: ['16px', { lineHeight: '24px' }],
-    title: ['20px', { lineHeight: '28px', letterSpacing: '-0.01em' }],
-    headline: ['28px', { lineHeight: '36px', letterSpacing: '-0.02em' }],
-    display: ['40px', { lineHeight: '48px', letterSpacing: '-0.02em' }],
+    title: ['20px', { lineHeight: '26px', letterSpacing: '-0.01em' }],
+    headline: ['28px', { lineHeight: '34px', letterSpacing: '-0.02em' }],
+    display: ['32px', { lineHeight: '38px', letterSpacing: '-0.02em' }],
   },
 
   fontWeight: { normal: '400', medium: '500', semibold: '600' },
 
   // Strict 4px spacing scale (padding, margin, gap, inset, translate).
   spacing: {
-    0: '0px', px: '1px', 1: '4px', 2: '8px', 3: '12px', 4: '16px', 6: '24px', 8: '32px', 12: '48px', 16: '64px',
+    0: '0px', px: '1px', 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '20px', 6: '24px', 8: '32px', 10: '40px', 12: '48px', 16: '64px',
   },
 
-  // Extra component sizes (width / height only).
-  sizes: { 5: '20px', 10: '40px', 14: '56px', chart: '160px' },
+  // Component sizes (width / height only).
+  sizes: { 9: '36px', 11: '44px', 14: '56px', 18: '72px', chart: '160px' },
 
-  borderRadius: { none: '0px', sm: '8px', md: '12px', lg: '16px', xl: '24px', full: '9999px' },
+  // One main radius (md) for buttons, inputs, rows and cards.
+  borderRadius: { none: '0px', sm: '8px', md: '12px', lg: '16px', full: '9999px' },
 
   boxShadow: {
-    overlay: '0 16px 48px -12px rgba(0,0,0,.7)',
-    accent: '0 0 0 1px rgba(200,243,29,.25), 0 8px 24px -8px rgba(200,243,29,.4)',
+    sheet: '0 -8px 32px rgba(0,0,0,.45)',
   },
 };

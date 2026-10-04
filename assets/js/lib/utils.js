@@ -53,6 +53,12 @@ export function formatNumber(value, digits = 1) {
   return new Intl.NumberFormat('bg-BG', { maximumFractionDigits: digits, minimumFractionDigits: 0 }).format(value);
 }
 
+/** Integer with a space as thousands separator (bg-BG doesn't group 4-digit numbers). */
+export function formatInt(value) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return '—';
+  return String(Math.round(Number(value))).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0');
+}
+
 export function formatDelta(value, unit = 'кг') {
   if (value === null || value === undefined || Number.isNaN(value)) return '—';
   const rounded = Math.round(value * 10) / 10;

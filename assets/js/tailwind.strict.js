@@ -4,7 +4,7 @@
  * so any value outside DESIGN.md simply doesn't exist as a class.
  */
 (() => {
-  const t = window.FitCheckDesign;
+  const t = window.CoachPortalDesign;
   tailwind.config = {
     theme: {
       colors: { transparent: 'transparent', current: 'currentColor', black: '#000', white: '#fff', ...t.colors },
@@ -17,6 +17,7 @@
         width: t.sizes,
         height: t.sizes,
         size: t.sizes,
+        minHeight: t.sizes,
         boxShadow: t.boxShadow,
       },
     },

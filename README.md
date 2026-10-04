@@ -1,106 +1,74 @@
-# FitCheck SaaS — седмичен чек-ин портал за фитнес треньори
+# Coach Portal
 
-Mobile-first прототип с тъмен интерфейс: треньорът добавя клиенти и им изпраща личен линк. Клиентът попълва седмичен отчет (тегло, сън, енергия, мерки, снимки Front/Side/Back, коментар), а треньорът вижда цялата история по седмици.
+Мобилно приложение (PWA-подобен уеб) за онлайн фитнес треньори и техните клиенти. Треньорът вижда какво изисква вниманието му, а клиентът вижда какво трябва да направи днес.
 
-**Технологии:** HTML + Tailwind CSS (CDN) + Vanilla JS (ES modules). Без build стъпка.
-**Данни:** localStorage за бърз MVP или Firebase (Auth + Firestore + Storage). Превключва се с една настройка.
+**Технологии:** HTML + Tailwind CSS (CDN) + Vanilla JS (ES modules), без build стъпка.
+**Данни:** localStorage за демо или Firebase (Auth + Firestore + Storage). Превключва се в `assets/js/config.js`.
 
-## Продукт и дизайн
-
-- [PRODUCT.md](PRODUCT.md) — проблем, персони, модули, обхват и метрики.
-- [DESIGN.md](DESIGN.md) — премиум тъмна дизайн система: токени за цветове, 2 шрифта (Space Grotesk + Inter), 6 размера текст и строга скала от 4 px.
-
-Всички страници зареждат `design-tokens.js` + `tailwind.strict.js`, които **подменят** стандартната Tailwind скала. Клас извън системата просто не работи. Проверка:
-
-```bash
-node scripts/design-lint.mjs
-```
+- [PRODUCT.md](PRODUCT.md): роли, екрани, потоци, модел на данните.
+- [DESIGN.md](DESIGN.md): неутрална тъмна дизайн система (токени, компоненти, мобилни правила).
 
 ## Стартиране
 
-ES модулите изискват HTTP сървър (не работи с `file://`):
-
 ```bash
-python3 -m http.server 8080
-# или
-npx serve .
+python3 -m http.server 8080   # или: npx serve .
 ```
 
-Отворете http://localhost:8080 и натиснете **„пробвай веднага с демо акаунт“** (`demo@fitcheck.app` / `demo1234`) или се регистрирайте.
-
-> Тест от телефон в същата мрежа: `http://<IP-на-компютъра>:8080`.
+Отворете http://localhost:8080. За бърз преглед има демо акаунти в долната част на входния екран:
+- **Треньор:** `coach@demo.coachportal.app` / `demo1234`
+- **Клиент:** `client@demo.coachportal.app` / `demo1234`
 
 ## Страници
 
-| Файл | Описание |
-|---|---|
-| `index.html` | Landing + вход / регистрация (bottom sheet на мобилни). `#login` / `#register` отварят формата директно. |
-| `dashboard.html` | Треньорски панел. `#/` — клиенти с индикатор за последен чек-ин, търсене и филтри; `#/client/:id` — история: графика на теглото, мерки, снимки (lightbox), коментари и бележки на треньора. |
-| `checkin.html?t=<token>` | Публична форма за клиента — без регистрация. |
-
-Индикатор за последен чек-ин: 🟢 ≤ 7 дни · 🟡 8–14 дни · 🔴 > 14 дни · ⚪ няма.
+| Файл | Роля | Съдържание |
+|---|---|---|
+| `index.html` | публична | Вход, избор на роля, регистрация, покана (`?invite=<token>`) |
+| `coach.html` | coach | `#/` Начало · `#/clients` · `#/client/:id/:tab` · `#/messages` · `#/profile` |
+| `client.html` | client | `#/` Начало · `#/plan` · `#/progress` · `#/chat` |
+| `checkin.html?t=<token>` | публична | Check-in в 4 стъпки (също от клиентското приложение) |
+| `dashboard.html` | — | Пренасочване към `coach.html` за стари линкове |
 
 ## Структура
 
 ```
 assets/
-  css/app.css                  слайдери, анимации, safe-area
+  css/app.css                  safe-area, движение, плъзгач, skeleton
   js/
     config.js                  избор на backend + Firebase конфигурация
-    design-tokens.js           дизайн токени (цветове, шрифтове, скали)
+    design-tokens.js           дизайн токени
     tailwind.strict.js         строга Tailwind тема от токените
-    lib/utils.js               DOM, дати, ID, компресия на снимки
-    lib/model.js               валидация, статуси, производни данни
-    lib/ui.js                  икони, toast, модали, lightbox, confirm
+    lib/utils.js               DOM, дати, числа, ID, компресия на снимки
+    lib/model.js               роли, валидация, статуси, програма, приоритети
+    lib/session.js             проверка на роля, поздрав
+    lib/ui.js                  компоненти (бутони, полета, списъци, навигация, sheet-ове)
+    lib/views.js               общи изгледи (ред на клиент, графика, check-in)
     services/backend.js        фасада — единствената точка за достъп до данни
-    services/local-adapter.js  localStorage реализация
-    services/firebase-adapter.js  Firebase реализация (същия интерфейс)
+    services/local-adapter.js  localStorage (+ миграция от FitCheck v1)
+    services/firebase-adapter.js  Firebase (същият интерфейс)
     services/demo-data.js      демо данни
-    pages/landing.js | dashboard.js | checkin.js
+    pages/entry.js | coach.js | client.js | checkin.js
 firestore.rules, storage.rules, firebase.json
+scripts/design-lint.mjs
 ```
 
-Страниците говорят само с `getBackend()` — двата адаптера имат еднакъв интерфейс (описан в `services/backend.js`), така че смяната на backend не засяга UI кода.
+## Демо режим (localStorage): ограничения
 
-## Демо режим (localStorage) — ограничения
+- Данните са **само в този браузър**. Покана или check-in линк, отворен на друго устройство, няма да намери клиента.
+- Снимките се компресират (720 px JPEG); лимитът на localStorage е ~5 MB.
+- Паролите се хешират (SHA-256 + salt), но това е прототип.
 
-- Данните живеят **само в този браузър**. Линк за чек-ин, отворен на друго устройство, няма да намери клиента. Бутонът „Форма“ в профила на клиента отваря формата в същия браузър за тест.
-- Снимките се компресират (720px, JPEG) и се пазят като data URL; лимитът на localStorage е ~5 MB.
-- Паролите се хешират (SHA-256 + salt), но това е прототип — не е реална защита.
+## Firebase
 
-## Firebase (production)
+1. Създайте проект в Firebase Console, добавете Web app и включете Email/Password, Firestore и Storage.
+2. Поставете конфигурацията в `assets/js/config.js` и задайте `backend: 'firebase'`.
+3. `firebase deploy --only firestore:rules,storage` (хостингът е във Vercel).
 
-1. Създайте проект в [Firebase Console](https://console.firebase.google.com) и добавете **Web app**.
-2. Включете **Authentication → Email/Password**, **Firestore** и **Storage**.
-3. Поставете конфигурацията в `assets/js/config.js` и задайте `backend: 'firebase'`.
-4. Деплой на правилата и хостинга:
+Правилата: ролята е неизменна; треньорът вижда само своите клиенти, check-ins и бележки; клиентът вижда само своя запис (програма) и своите check-ins; бележките на треньора (`clientNotes`) никога не са видими за клиента.
+
+Адаптерът и правилата не са тествани срещу реален Firebase проект. Check-ins, изпратени преди клиентът да си направи акаунт, не се виждат в неговото приложение при Firebase (треньорът ги вижда), защото не носят `clientUserId`.
+
+## Проверка на дизайна
 
 ```bash
-npm i -g firebase-tools
-firebase login
-firebase use --add            # изберете проекта
-firebase deploy               # hosting + firestore.rules + storage.rules
+node scripts/design-lint.mjs
 ```
-
-Модел на данните:
-
-```
-coaches/{uid}           { name, email, createdAt }
-clients/{id}            { coachId, name, email, goal, token, createdAt }
-checkinLinks/{token}    { clientId, coachId, clientName, coachName }   // публично четене само по точен token
-checkins/{id}           { token, clientId, coachId, clientName, weight, sleep, energy,
-                          measurements, comment, photos{front,side,back → storage path},
-                          coachNote, createdAt }
-Storage: checkins/{token}/{checkinId}/{front|side|back}.jpg
-```
-
-Правилата гарантират, че треньорът вижда само своите данни, а клиентът може единствено да прочете своя линк и да създаде чек-ин към него (без да чете чужди отчети или снимки).
-
-Сайтът е статичен и може да се хоства и на Netlify, Vercel, GitHub Pages и др.
-
-## Идеи за следващи стъпки
-
-- Имейл/push напомняния за чек-ин (Cloud Functions + cron)
-- Сравнение на снимки „преди / след“ една до друга
-- Абонаменти за треньори (Stripe) и лимити по план
-- PWA офлайн режим (service worker)
